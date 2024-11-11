@@ -1,3 +1,11 @@
+
+import java.awt.event.ItemEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import javax.swing.JOptionPane;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -15,6 +23,37 @@ public class KonversiSuhu extends javax.swing.JFrame {
      */
     public KonversiSuhu() {
         initComponents();
+
+String[] toScale = new String[1]; // Array untuk menyimpan skala tujuan secara dinamis
+        
+        // Tambahkan ItemListener untuk setiap JRadioButton
+radioCelcius.addItemListener(e -> {
+    if (e.getStateChange() == ItemEvent.SELECTED) toScale[0] = "Celsius";
+});
+
+radioFahrenheit.addItemListener(e -> {
+    if (e.getStateChange() == ItemEvent.SELECTED) toScale[0] = "Fahrenheit";
+});
+
+radioKelvin.addItemListener(e -> {
+    if (e.getStateChange() == ItemEvent.SELECTED) toScale[0] = "Kelvin";
+});
+
+radioReamur.addItemListener(e -> {
+    if (e.getStateChange() == ItemEvent.SELECTED) toScale[0] = "Reamur";
+});
+        
+        jTextField1.getDocument().addDocumentListener(new DocumentListener() {
+    public void insertUpdate(DocumentEvent e) {
+        konversiOtomatis();
+    }
+    public void removeUpdate(DocumentEvent e) {
+        konversiOtomatis();
+    }
+    public void changedUpdate(DocumentEvent e) {
+        konversiOtomatis();
+    }
+});
     }
 
     /**
@@ -27,17 +66,18 @@ public class KonversiSuhu extends javax.swing.JFrame {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jComboBox1 = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jRadioButton3 = new javax.swing.JRadioButton();
-        jRadioButton4 = new javax.swing.JRadioButton();
+        radioCelcius = new javax.swing.JRadioButton();
+        radioFahrenheit = new javax.swing.JRadioButton();
+        radioKelvin = new javax.swing.JRadioButton();
+        radioReamur = new javax.swing.JRadioButton();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        hasil = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
 
@@ -54,6 +94,16 @@ public class KonversiSuhu extends javax.swing.JFrame {
         jPanel1.add(jLabel1, gridBagConstraints);
 
         jTextField1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField1KeyTyped(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(7, 7, 7, 7);
@@ -61,12 +111,22 @@ public class KonversiSuhu extends javax.swing.JFrame {
 
         jComboBox1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Celcius", "Fahrenheit", "Reamur", "Kelvin" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.insets = new java.awt.Insets(7, 7, 7, 7);
         jPanel1.add(jComboBox1, gridBagConstraints);
 
         jButton1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jButton1.setText("Konversi");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 4;
@@ -74,41 +134,45 @@ public class KonversiSuhu extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(7, 7, 7, 7);
         jPanel1.add(jButton1, gridBagConstraints);
 
-        jRadioButton1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jRadioButton1.setText("Celcius");
+        buttonGroup1.add(radioCelcius);
+        radioCelcius.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        radioCelcius.setText("Celcius");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(7, 7, 7, 7);
-        jPanel1.add(jRadioButton1, gridBagConstraints);
+        jPanel1.add(radioCelcius, gridBagConstraints);
 
-        jRadioButton2.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jRadioButton2.setText("Fahrenheit");
+        buttonGroup1.add(radioFahrenheit);
+        radioFahrenheit.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        radioFahrenheit.setText("Fahrenheit");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(7, 7, 7, 7);
-        jPanel1.add(jRadioButton2, gridBagConstraints);
+        jPanel1.add(radioFahrenheit, gridBagConstraints);
 
-        jRadioButton3.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jRadioButton3.setText("Kelvin");
+        buttonGroup1.add(radioKelvin);
+        radioKelvin.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        radioKelvin.setText("Kelvin");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(7, 7, 7, 7);
-        jPanel1.add(jRadioButton3, gridBagConstraints);
+        jPanel1.add(radioKelvin, gridBagConstraints);
 
-        jRadioButton4.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jRadioButton4.setText("Reamur");
+        buttonGroup1.add(radioReamur);
+        radioReamur.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        radioReamur.setText("Reamur");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(7, 7, 7, 7);
-        jPanel1.add(jRadioButton4, gridBagConstraints);
+        jPanel1.add(radioReamur, gridBagConstraints);
 
         jLabel2.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel2.setText("Konversi Ke");
@@ -119,17 +183,22 @@ public class KonversiSuhu extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(7, 7, 7, 7);
         jPanel1.add(jLabel2, gridBagConstraints);
 
-        jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
-        jLabel3.setText("Hasil");
+        hasil.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
+        hasil.setText("Hasil");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.insets = new java.awt.Insets(7, 7, 7, 7);
-        jPanel1.add(jLabel3, gridBagConstraints);
+        jPanel1.add(hasil, gridBagConstraints);
 
         jButton2.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jButton2.setText("Hapus");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 6;
@@ -139,6 +208,11 @@ public class KonversiSuhu extends javax.swing.JFrame {
 
         jButton3.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jButton3.setText("Keluar");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 6;
@@ -165,6 +239,137 @@ public class KonversiSuhu extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void konversiOtomatis() {
+    try {
+        double inputTemp = Double.parseDouble(jTextField1.getText());
+        String fromScale = (String) jComboBox1.getSelectedItem();
+        double result = 0;
+        String toScale = "";
+
+        if (radioCelcius.isSelected()) {
+            toScale = "Celcius";
+        } else if (radioFahrenheit.isSelected()) {
+            toScale = "Fahrenheit";
+        } else if (radioKelvin.isSelected()) {
+            toScale = "Kelvin";
+        } else if (radioReamur.isSelected()) {
+            toScale = "Reamur";
+        }
+
+        // (Tambahkan logika konversi suhu yang sesuai di sini)
+
+        hasil.setText("Hasil: " + result + " " + toScale);
+    } catch (NumberFormatException ex) {
+        hasil.setText("Masukkan angka yang valid.");
+    }
+}
+    
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+       try {
+    double inputTemp = Double.parseDouble(jTextField1.getText());
+    String fromScale = (String) jComboBox1.getSelectedItem();
+    double result = 0;
+    String toScale = ""; // untuk menyimpan skala tujuan
+
+    // Menentukan skala tujuan berdasarkan JRadioButton yang dipilih
+    if (radioCelcius.isSelected()) {
+        toScale = "Celcius";
+    } else if (radioFahrenheit.isSelected()) {
+        toScale = "Fahrenheit";
+    } else if (radioKelvin.isSelected()) {
+        toScale = "Kelvin";
+    } else if (radioReamur.isSelected()) {
+        toScale = "Reamur";
+    }
+
+    // Logika konversi antar skala suhu
+    if (fromScale.equals("Celcius")) {
+        if (toScale.equals("Fahrenheit")) {
+            result = inputTemp * 9/5 + 32;
+        } else if (toScale.equals("Kelvin")) {
+            result = inputTemp + 273.15;
+        } else if (toScale.equals("Reamur")) {
+            result = inputTemp * 4/5;
+        } else {
+            result = inputTemp;
+        }
+    } else if (fromScale.equals("Fahrenheit")) {
+        if (toScale.equals("Celcius")) {
+            result = (inputTemp - 32) * 5/9;
+        } else if (toScale.equals("Kelvin")) {
+            result = (inputTemp - 32) * 5/9 + 273.15;
+        } else if (toScale.equals("Reamur")) {
+            result = (inputTemp - 32) * 4/9;
+        } else {
+            result = inputTemp;
+        }
+    } else if (fromScale.equals("Kelvin")) {
+        if (toScale.equals("Celcius")) {
+            result = inputTemp - 273.15;
+        } else if (toScale.equals("Fahrenheit")) {
+            result = (inputTemp - 273.15) * 9/5 + 32;
+        } else if (toScale.equals("Reamur")) {
+            result = (inputTemp - 273.15) * 4/5;
+        } else {
+            result = inputTemp;
+        }
+    } else if (fromScale.equals("Reamur")) {
+        if (toScale.equals("Celcius")) {
+            result = inputTemp * 5/4;
+        } else if (toScale.equals("Fahrenheit")) {
+            result = inputTemp * 9/4 + 32;
+        } else if (toScale.equals("Kelvin")) {
+            result = inputTemp * 5/4 + 273.15;
+        } else {
+            result = inputTemp;
+        }
+    }
+
+    hasil.setText("Hasil: " + result + " " + toScale);
+} catch (NumberFormatException ex) {
+    JOptionPane.showMessageDialog(this, "Masukkan angka yang valid.", "Error", JOptionPane.ERROR_MESSAGE);
+}
+
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+ 
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        jTextField1.setText("");
+        hasil.setText("Hasil");
+        jTextField1.requestFocus();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void jTextField1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyTyped
+        // TODO add your handling code here:
+        jTextField1.addKeyListener(new KeyAdapter() {
+    public void keyTyped(KeyEvent e) {
+        char c = e.getKeyChar();
+        if (!Character.isDigit(c) && c != '.') {
+            e.consume();
+        }
+    }
+});
+
+    }//GEN-LAST:event_jTextField1KeyTyped
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        int confirm = JOptionPane.showConfirmDialog(this, "Apakah Anda yakin ingin keluar?", "Konfirmasi Keluar", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+        System.exit(0);
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -202,18 +407,19 @@ public class KonversiSuhu extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JLabel hasil;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JRadioButton jRadioButton3;
-    private javax.swing.JRadioButton jRadioButton4;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JRadioButton radioCelcius;
+    private javax.swing.JRadioButton radioFahrenheit;
+    private javax.swing.JRadioButton radioKelvin;
+    private javax.swing.JRadioButton radioReamur;
     // End of variables declaration//GEN-END:variables
 }
